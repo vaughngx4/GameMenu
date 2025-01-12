@@ -1,0 +1,39 @@
+<!--index.html-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <link rel="stylesheet" type="text/css" href="./assets/styles.css" />
+    <title>GameMenu</title>
+  </head>
+
+  <body>
+    <h1></h1>
+    <section class="main">
+      <div id="topbar" class="menu">
+        <div id="settings" class="button settings">
+          <img src="./assets/img/settings.png" alt="Settings">
+        </div>
+        <div id="close" class="button close">
+          <img src="./assets/img/close.png" alt="Close">
+        </div>
+      </div>
+      <div id="discord" class="button app discord">
+        <img src="./assets/img/discord.png" alt="Discord" />
+      </div>
+      <div id="playnite" class="button app playnite">
+        <img src="./assets/img/playnite.png" alt="Playnite" />
+      </div>
+      <div id="icue" class="button app icue">
+        <img src="./assets/img/icue.png" alt="iCue" />
+      </div>
+    </section>
+
+    <script src="./assets/js/app.js" type="module"></script>
+  </body>
+</html>

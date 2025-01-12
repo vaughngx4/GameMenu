@@ -1,0 +1,19 @@
+{
+    "applications": [
+        {
+            "name": "discord",
+            "icon": "icons/discord.png",
+            "command": ""
+        },
+        {
+            "name": "playnite",
+            "icon": "icons/playnite.png",
+            "command": ""
+        },
+        {
+            "name": "icue",
+            "icon": "icons/icue.png",
+            "command": ""
+        }
+    ]
+}

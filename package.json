@@ -1,0 +1,17 @@
+{
+  "name": "gamemenu",
+  "version": "1.0.0",
+  "description": "Quick launcher for in-game use",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "vaughngx4",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^33.2.1"
+  },
+  "dependencies": {
+    "node-gamepad": "github:vaughngx4/node-gamepad"
+  }
+}

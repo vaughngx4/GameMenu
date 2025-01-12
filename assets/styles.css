@@ -1,0 +1,85 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: rgba(0, 0, 0, 0.65);
+}
+
+.main {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.menu {
+    display: flex;
+    flex-direction: row; /* defines menu position (row = top, column = left) */
+    position: absolute;
+    right: 32px;
+    top: 32px;
+}
+
+.settings,
+.close {
+    height: 38px;
+    width: 38px;
+    margin-inline: 5px;
+}
+
+.settings img,
+.close img{
+    height: 32px;
+    width: 32px;
+}
+
+.app {
+    height: 110px;
+    width: 110px;
+    margin-inline: 20px;
+}
+
+.app img {
+    max-inline-size: 100px;
+    border-radius: 10px;
+    z-index: 50;
+}
+
+.button {
+    z-index: 51;
+    transition: 0.5s;
+    display: flex;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.button:hover,
+.button.active {
+    transition: 0.5s;
+    background: #ef4149;
+    filter: drop-shadow(0 0 20px #ef4149);
+
+    &:before,
+    &:after {
+        transition: 0.5s;
+        background: #ef4149;
+    }
+    cursor: pointer;
+}
+
+@keyframes animate {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+
+    100% {
+        filter: hue-rotate(360deg);
+    }
+}

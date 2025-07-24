@@ -67,41 +67,18 @@ export async function startPolling() {
 async function gamepadListen() {
   setInterval(() => {
     if (buttons) {
-      // if (
-      //   buttons[mapping.share].pressed &&
-      //   buttons[mapping.ps_button].pressed
-      // ) {
-      //   triggerEvent(["share", "ps_button"], () => {
-      //     window.close();
-      //   });
-      // }
-      if (buttons[mapping.ps_button].pressed) {
-        triggerEvent(["ps_button"], () => {
-          window.close();
-        });
-      }
-      if (buttons[mapping.cross].pressed) {
-        triggerEvent(["cross"], () => {
-          navSelect();
-        });
-      }
-      if (buttons[mapping.circle].pressed) {
-        triggerEvent(["circle"], () => {
-          navBack();
-        });
-      }
-      if (axes[0] < 0 - deadZone) {
-        navLeft();
-      }
-      if (axes[0] > 0 + deadZone) {
-        navRight();
-      }
-      if (axes[1] < 0 - deadZone) {
-        navDown();
-      }
-      if (axes[0] > 0 + deadZone) {
-        navUp();
-      }
+      if (buttons[mapping.ps_button].pressed)
+        triggerEvent(["ps_button"], window.close());
+      if (buttons[mapping.cross].pressed) triggerEvent(["cross"], navSelect());
+      if (buttons[mapping.circle].pressed) triggerEvent(["circle"], navBack);
+      if (buttons[mapping.dpad_left].pressed) navLeft();
+      if (buttons[mapping.dpad_right].pressed) navRight();
+      if (buttons[mapping.dpad_up].pressed) navUp();
+      if (buttons[mapping.dpad_down].pressed) navDown();
+      if (axes[0] < 0 - deadZone) navLeft();
+      if (axes[0] > 0 + deadZone) navRight();
+      if (axes[1] < 0 - deadZone) navDown();
+      if (axes[0] > 0 + deadZone) navUp();
     }
   }, pollInterval);
 }

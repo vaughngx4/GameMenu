@@ -1,11 +1,18 @@
 const GamePad = require("node-gamepad");
+const { GlobalKeyboardListener } = require("node-global-key-listener");
+
 
 let gc = null;
-let data = {};
-const eventTriggerDelay = 200;
-
-const supportedGamepads = ["ps4/dualshock4", "ps3/dualshock3"];
 let connectedPad = null;
+let eventData = {};
+
+// both wake triggers need to be true in order to fire the wake event
+let wakeTriggerA = false;
+let wakeTriggerB = false;
+
+const gkl = new GlobalKeyboardListener();
+const supportedGamepads = ["ps4/dualshock4", "ps3/dualshock3", "other/generic"];
+const eventTriggerDelay = 200;
 
 async function startGamepadListener() {
   setInterval(() => {
@@ -30,29 +37,35 @@ async function startGamepadListener() {
   }, 100);
 }
 
-let restoreBtnOnePressed = false;
-let restoreBtnTwoPressed = false;
-
 async function listen() {
+  // controller events
   if (gc) {
-    if ("ps4/dualshock4" == connectedPad) {
-      // delay is set here because release event on psx button is unreliable
+    if ("ps4/dualshock4" == connectedPad || "ps3/dualshock3" == connectedPad) {
+      // delay is set here because release event on psx button is unreliable (DS4 controller)
       gc.on("psx:press", function () {
-        restoreBtnOnePressed = true;
+        wakeTriggerA = true;
+        wakeTriggerB = true;
         setTimeout(() => {
-          restoreBtnOnePressed = false;
+          wakeTriggerA = false;
+          wakeTriggerB = false;
         }, 200);
       });
-      // gc.on("share:press", function () {
-      //   restoreBtnTwoPressed = true;
-      // });
-      // gc.on("share:release", function () {
-      //   restoreBtnTwoPressed = false;
-      // });
+    } else if ("other/generic" == connectedPad) {
+      // delay is set here because release event on psx button is unreliable (DS4 controller)
+      // leaving delay for now, until I get feedback or am able to test the release event on
+      // other controllers
+      gc.on("guide:press", function () {
+        wakeTriggerA = true;
+        wakeTriggerB = true;
+        setTimeout(() => {
+          wakeTriggerA = false;
+          wakeTriggerB = false;
+        }, 200);
+      });
     }
     // connect event currently not working
     gc.on("connect", () => {
-      console.log("Gamepad detected");
+      console.log("Gamepad connected");
     });
     gc.on("disconnect", () => {
       console.log("Gamepad disconnected");
@@ -61,14 +74,33 @@ async function listen() {
   }
 }
 
-// listen for wake button event
+// keyboard events
+gkl.addListener((e) => {
+  if (e.state === "DOWN") {
+    // console.log(`Key pressed: ${e.name}`);
+    if (e.name === "LEFT ALT") {
+      wakeTriggerA = true;
+    }
+    if (e.name === "SECTION") {
+      wakeTriggerB = true;
+    }
+  }
+  if (e.state === "UP") {
+    // console.log(`Key released: ${e.name}`);
+    if (e.name === "LEFT ALT") {
+      wakeTriggerA = false;
+    }
+    if (e.name === "SECTION") {
+      wakeTriggerB = false;
+    }
+  }
+});
+
+// listen for wake event
 function listenForWake(callback) {
   setInterval(() => {
-    if (
-      restoreBtnOnePressed
-      // && restoreBtnTwoPressed
-    ) {
-      triggerEvent(["psx"], () => {
+    if (wakeTriggerA && wakeTriggerB) {
+      triggerEvent(["guide"], () => {
         callback();
       });
     }
@@ -83,19 +115,19 @@ function triggerEvent(buttons, callback) {
     key = key + button;
   }
   // create object if none exists
-  if (!data[key]) {
-    data = {
+  if (!eventData[key]) {
+    eventData = {
       [key]: {
         wait: false,
       },
     };
   }
   // trigger function if not waiting
-  if (!data[key]["wait"]) {
-    data[key]["wait"] = true;
+  if (!eventData[key]["wait"]) {
+    eventData[key]["wait"] = true;
     callback();
     setTimeout(() => {
-      data[key]["wait"] = false;
+      eventData[key]["wait"] = false;
     }, eventTriggerDelay);
   }
 }

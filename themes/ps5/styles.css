@@ -1,0 +1,88 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #0f0f1a 0%, #050510 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(10px);
+  z-index: -1;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Menu bar top, shortcuts bottom */
+  align-items: center;
+  height: 100vh;
+  padding: 40px 60px;
+  box-sizing: border-box;
+}
+
+.menu {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.button {
+  margin: 0 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.button img {
+  width: 48px;
+  height: 48px;
+}
+
+.button:hover,
+.button.active {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.shortcuts {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 40px; /* Space from bottom of screen */
+  flex-shrink: 0;
+}
+
+.app {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.app img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.app:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+}

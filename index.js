@@ -3,9 +3,11 @@ const path = require("node:path");
 const fs = require("fs");
 const appConfig = require("./apps.json");
 const { startGamepadListener, listenForWake } = require("./inputHandler.js");
+const cp = require("child_process");
 
 let tray = null;
 let windowExists = false;
+let isLoaded = false;
 
 // create application window
 const createWindow = () => {
@@ -17,43 +19,52 @@ const createWindow = () => {
     transparent: true,
     frame: false,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
+      preload: path.join(__dirname, "preload.js"),
+    },
   });
 
   // load app interface
   mainWindow.loadFile("app.html");
   // mainWindow.webContents.openDevTools();
 
-  // this currently does not work, close event is not triggered in sandboxed mode
+  // this currently does not work on linux, close event is not triggered in sandboxed mode
   // does not appear that it will be fixed
+  // also note that the close event is not triggered when the window is destroyed
   // https://github.com/electron/electron/issues/28215
   mainWindow.on("close", (event) => {
     windowExists = false;
-    mainWindow.close();
+    // mainWindow.close();
   });
 
   // listen for app launch event
-  ipcMain.on('launch-app', (event, appName) => {
-    console.log("Launching " + appName) // debug !!!
-    // launch app here !!!
-  });
-
-  // send app config to renderer
-  mainWindow.webContents.on("did-finish-load", async () => {
-    processApps();
-    mainWindow.webContents.send("read-app-config", appConfig);
+  // not sure why we get stacking triggers of this event
+  ipcMain.on("launch-app", (event, appName) => {
+    console.log("Launching " + appName);
+    cp.execFile(
+      appConfig[
+        appConfig
+          .map((e) => {
+            return e.name;
+          })
+          .indexOf(appName)
+      ].command
+    );
+    BrowserWindow.getAllWindows().forEach((win) => {
+      win.close();
+    });
+    windowExists = false;
   });
 };
 
 app.whenReady().then(() => {
+  ipcMain.handle("event:loaded", handleLoadedEvent);
   // create tray icon/menu
   tray = new Tray(path.join(__dirname, "/assets/img/game-control.png"));
   const contextMenu = Menu.buildFromTemplate([
-    { label: "GameMenu", type: "normal", enabled: false },
-    { type: "separator" },
-    { label: "Open", type: "normal", click: createWindow },
-    { label: "Quit", type: "normal", click: handleQuit },
+    // { label: "GameMenu", type: "normal", enabled: false },
+    // { type: "separator" },
+    { label: "Show Menu", type: "normal", click: createWindow },
+    { label: "Exit", type: "normal", click: handleQuit },
   ]);
   tray.setToolTip("GameMenu");
   tray.setContextMenu(contextMenu);
@@ -91,15 +102,33 @@ listenForWake(() => {
     createWindow();
   } else {
     windowExists = false;
+    BrowserWindow.getAllWindows().forEach((win) => {
+      win.close();
+    });
   }
 });
 
-function processApps() {
-  for (const cat in appConfig){
-    for (let index = 0; index < cat.length; index++) {
-      console.log(cat);
-      const img = fs.readFileSync("./themes/default/" + appConfig[cat][index].icon);
-      appConfig[cat][index].icon = Buffer.from(img).toString('base64');
-    }
+async function handleLoadedEvent() {
+  if (isLoaded) {
+    return true;
+  } else {
+    isLoaded = true;
+    return false;
   }
 }
+
+// new stuff - not implemented
+function getProcs() {
+  let procs = [];
+  cp.exec("tasklist", function (err, stdout, stderr) {
+    if (err) {
+      console.error(err, stderr);
+    }
+    console.log(stdout);
+    // stdout is a string containing the output of the command.
+    // parse it and look for the processes.
+  });
+}
+
+// a) needs to handle more inputs like back/escape to close the menu
+// b)

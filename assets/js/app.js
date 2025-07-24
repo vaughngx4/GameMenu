@@ -1,24 +1,16 @@
 import { startPolling } from "./gamepad.js";
 
+export let buttons = [];
+const isLoaded = await window.electronAPI.isLoaded();
+console.log(isLoaded);
+
+// close button
 let closeButton = document.getElementById("close");
 closeButton.addEventListener("click", () => {
   window.close();
 });
 
-window.electronAPI.onReadAppConfig((config) => {
-  console.log(config);
-});
-const apps = ["discord", "playnite", "icue"];
-export let buttons = [];
-
-for (const app of apps) {
-  let btn = document.getElementById(app);
-  // let btn = document.createElement("div");
-  buttons.push(btn);
-  addClickAnim(btn);
-  addLaunchEvent(btn);
-}
-
+loadApps();
 startPolling();
 
 function addClickAnim(button) {
@@ -32,8 +24,31 @@ function addClickAnim(button) {
   });
 }
 
-function addLaunchEvent(button) {
-  button.addEventListener("click", () => {
-    window.electronAPI.launchApp(button.id);
-  });
+function launchApp(event) {
+  console.log(event);
+}
+
+function loadApps() {
+  fetch("apps.json")
+    .then((response) => response.json())
+    .then((json) => {
+      let container = document.getElementById("shortcuts");
+      container.innerHTML = "";
+      for (const app of json) {
+        let btn = document.createElement("div");
+        btn.classList.add("button");
+        btn.classList.add("app");
+        btn.classList.add(app.name);
+        btn.id = app.name;
+        let btnImg = document.createElement("img");
+        btnImg.src = app.icon;
+        btn.appendChild(btnImg);
+        container.appendChild(btn);
+        buttons.push(btn);
+        addClickAnim(btn);
+        btn.addEventListener("click", async () => {
+          window.electronAPI.launchApp(app.name);
+        });
+      }
+    });
 }

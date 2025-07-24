@@ -1,0 +1,17 @@
+[
+  {
+    "name": "discord",
+    "icon": "themes/default/icons/discord.png",
+    "command": "C:\\Users\\pray4\\AppData\\Local\\Discord\\Update.exe"
+  },
+  {
+    "name": "playnite",
+    "icon": "themes/default/icons/playnite.png",
+    "command": "C:\\Portable\\Playnite\\Playnite.FullscreenApp.exe"
+  },
+  {
+    "name": "icue",
+    "icon": "themes/default/icons/icue.png",
+    "command": "C:\\Program Files\\Corsair\\Corsair iCUE5 Software\\iCUE.exe"
+  }
+]

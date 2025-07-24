@@ -1,19 +1,17 @@
-{
-    "applications": [
-        {
-            "name": "discord",
-            "icon": "icons/discord.png",
-            "command": ""
-        },
-        {
-            "name": "playnite",
-            "icon": "icons/playnite.png",
-            "command": ""
-        },
-        {
-            "name": "icue",
-            "icon": "icons/icue.png",
-            "command": ""
-        }
-    ]
-}
+[
+  {
+    "name": "discord",
+    "icon": "themes/default/icons/discord.png",
+    "command": "C:\\Users\\pray4\\AppData\\Local\\Discord\\Update.exe"
+  },
+  {
+    "name": "playnite",
+    "icon": "themes/default/icons/playnite.png",
+    "command": "C:\\Portable\\Playnite\\Playnite.FullscreenApp.exe"
+  },
+  {
+    "name": "icue",
+    "icon": "themes/default/icons/icue.png",
+    "command": "C:\\Program Files\\Corsair\\Corsair iCUE5 Software\\iCUE.exe"
+  }
+]
